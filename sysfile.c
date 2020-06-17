@@ -35,6 +35,25 @@ argfd(int n, int *pfd, struct file **pf)
   return 0;
 }
 
+
+
+int sys_lseek(void) {
+	int fd, i;
+	signed int offset, new = 0;
+	struct file *file;	
+
+	argfd(0, &fd, &file);
+	argint(1, &offset);
+	argint(2, &i);
+	if(i == SEEK_CUR) 
+		file->off = file->off + offset;	
+	else if(i == SEEK_SET) 
+		file->off = offset;
+	else if(i == SEEK_END) 
+		file->off = file->ip->size + offset;
+	
+	return file->off;
+}
 // Allocate a file descriptor for the given file.
 // Takes over file reference from caller on success.
 static int
@@ -442,3 +461,4 @@ sys_pipe(void)
   fd[1] = fd1;
   return 0;
 }
+
